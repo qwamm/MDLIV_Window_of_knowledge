@@ -1,7 +1,7 @@
 import docx2txt
 
 
-class DocxETL:
+class DocxExtractor:
     def __init__(self, docx_list: list[str]):
         self.files = docx_list
 

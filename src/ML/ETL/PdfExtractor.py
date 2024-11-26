@@ -1,7 +1,7 @@
 from pypdf import PdfReader
 
 
-class PdfETL:
+class PdfExtractor:
     def __init__(self, pdf_list: list[str]):
         self.files = pdf_list
 

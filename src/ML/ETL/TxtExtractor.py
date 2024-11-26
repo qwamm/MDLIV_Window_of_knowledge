@@ -1,6 +1,6 @@
 
 
-class TxtETL:
+class TxtExtractor:
     def __init__(self, txt_list: list[str]):
         self.files = txt_list
 
