@@ -1,1 +1,1 @@
-from .models import User, KnowledgeBase, Record, UserBase, File, Tag
+from .models import User, File, Tag, Record, KnowBase, UsersBase
