@@ -6,6 +6,7 @@ from fastapi import Depends
 
 class UserController(Controller):
     prefix = "/user"
+    tags=["user"]
 
     def __init__(self):
         pass
