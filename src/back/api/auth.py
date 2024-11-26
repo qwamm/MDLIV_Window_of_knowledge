@@ -2,6 +2,7 @@ from fastapi_controllers import Controller, get, post
 from pydantic import BaseModel
 from fastapi import Depends
 from ..login_manager import login_manager
+from src.database.models import User
 
 
 class LoginRequest(BaseModel):
@@ -14,6 +15,7 @@ class RegisterRequest(BaseModel):
     user_name: str
     password: str
     password_again: str
+
 
 class AuthController(Controller):
     prefix="/auth"
@@ -32,6 +34,6 @@ class AuthController(Controller):
         return {"message": "OK"}
 
     @post("/logout")
-    def logout(self):
+    def logout(self, user: User = Depends(login_manager)):
         # logout
         return {"message": "OK"}
