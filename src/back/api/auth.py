@@ -19,6 +19,7 @@ class RegisterRequest(BaseModel):
 
 class AuthController(Controller):
     prefix="/auth"
+    tags=["auth"]
 
     def __init__(self):
         pass

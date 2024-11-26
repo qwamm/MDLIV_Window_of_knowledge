@@ -28,6 +28,7 @@ class AccessRequest(BaseModel):
 
 class KnowledgeBaseController(Controller):
     prefix = "/knowledge_base"
+    tags=["knowledge_base"]
 
     def __init__(self):
         pass
