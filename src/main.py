@@ -6,11 +6,14 @@ from starlette.middleware import Middleware
 from starlette.status import HTTP_401_UNAUTHORIZED
 
 from .back import router
+from src.database import create_db_and_tables, sessionmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # create db tables here
+    await create_db_and_tables()
     yield
+    if sessionmanager._engine is not None:
+        await sessionmanager.close()
 
 app = FastAPI(
     docs_url="/api/docs",
