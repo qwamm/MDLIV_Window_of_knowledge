@@ -39,7 +39,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     first_name: Mapped[str]
-    second_name: Mapped[str]
+    second_name: Mapped[str | None]
 
     knowbases: Mapped[list[KnowBase]] = relationship(
         back_populates="users", secondary=knowbase_users_table
