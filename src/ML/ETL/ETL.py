@@ -15,11 +15,11 @@ class ETL:
         self.transformer = Transformer()
         self.loader = Loader()
 
-    def etl(self):
+    def etl(self, base_collection_name: str):
         pdf_contents = self.transformer.transform(self.pdfer.extract())
         txt_contents = self.transformer.transform(self.txter.extract())
         docx_contents = self.transformer.transform(self.docxer.extract())
-        self.loader.load(pdf_contents, "pdf")
-        self.loader.load(txt_contents, "txt")
-        self.loader.load(docx_contents, "docx")
+        self.loader.load(pdf_contents, base_collection_name + "_pdf")
+        self.loader.load(txt_contents, base_collection_name + "_txt")
+        self.loader.load(docx_contents, base_collection_name + "_docx")
         return self.loader.client

@@ -19,5 +19,5 @@ class Searcher:
                 score = response[0].score
         return {
             "match" : best[0].document,
-            "sources" : [best[1].document.split("~")[0], best[2].document.split("~")[0]]
+            "sources" : [b.document.split("~")[0][:-1:] for b in best]
         }
