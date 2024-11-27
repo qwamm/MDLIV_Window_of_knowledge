@@ -12,7 +12,11 @@ class UserService:
         self.profile_repository = UserRepository(session)
 
     async def get_by_id(self, id: int) -> User:
-        return await self.profile_repository.get_by_id(id)
+        user = await self.profile_repository.get_by_id(id)
+        if user is None:
+            raise HTTPException(HTTP_400_BAD_REQUEST, "Unauthorised")
+        else:
+            return user
 
     async def login(self, login: str, password: str) -> User:
         profile = await self.profile_repository.get_by_auth(login, password)

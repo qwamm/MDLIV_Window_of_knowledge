@@ -29,6 +29,12 @@ record_tags_table = Table(
     Column("tag_id", ForeignKey("tag.id"), primary_key=True),
 )
 
+# records_knowbase_table = Table(
+#     "record_knowbase",
+#     Base.metadata,
+#     Column("record_id", ForeignKey("record.id"), primary_key=True),
+#     Column("knowbase_id", ForeignKey("knowbase.id"), primary_key=True),
+# )
 
 class AccessPolicy(Base):
     __tablename__ = "access_policies"
@@ -92,6 +98,8 @@ class Record(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     description: Mapped[str | None]
 
+    know_base: Mapped["KnowBase"] = relationship(back_populates="records")
+
     files: Mapped[list["File"]] = relationship(
         secondary=record_files_table
     )
@@ -110,6 +118,8 @@ class KnowBase(Base):
     users: Mapped[list["User"]] = relationship(
         secondary=knowbase_users_table
     )
+    records: Mapped[list["Record"]] = relationship(back_populates="knowbase")
+
     customization: Mapped["Customization"] = relationship(back_populates="knowbase")
     search_logs: Mapped[list["SearchLog"]] = relationship(back_populates="knowbase")
     # integrations: Mapped[list["ExternalIntegration"]] = relationship(back_populates="knowbase")

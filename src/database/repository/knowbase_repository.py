@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from ..models import User, KnowBase
+from ..models import User, KnowBase, Record
 
 
 class KnowBaseRepository:
@@ -25,4 +25,24 @@ class KnowBaseRepository:
 
     async def add_user_to_KnowBase(self, user: User) -> None:
         KnowBase.users.append(user)
+        await self.session.flush()
+
+    async def create_KnowBase(self, name: str, description: str) -> None:
+        know_base = KnowBase(name=name, description=description)
+        self.session.add(know_base)
+        await self.session.flush()
+
+    async def delete_KnowBase(self, id: int) -> None:
+        know_base = await self.get_by_id(id)
+        await self.session.delete(know_base)
+        await self.session.flush()
+
+    async def add_record(self, id: int, record: Record) -> None:
+        know_base = await self.get_by_id(id)
+        know_base.records.append(record)
+        await self.session.flush()
+
+    async def delete_record(self, id: int, record: Record):
+        know_base = await self.get_by_id(id)
+        know_base.records.remove(record)
         await self.session.flush()

@@ -1,11 +1,12 @@
 from fastapi_controllers import Controller, get, post
 from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class CreateRequest(BaseModel):
     name: str
-    records: list[int]
-    users: list[int]
+    # records: list[int]
+    # users: list[int]
     description: str
 
 
@@ -40,7 +41,7 @@ class KnowledgeBaseController(Controller):
 
     @post("/create")
     def create(self, request: CreateRequest):
-        # create KB in db
+
         return {"message": "OK"}
 
     @post("/add_record")
