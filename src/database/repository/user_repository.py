@@ -45,11 +45,6 @@ class UserRepository:
             old_password = ""
         return check_password_hash(old_password, password)
 
-    async def get_knowbases_by_id(self, id: int) -> list[KnowBase] | None:
-        stmt = await self.get_by_id(id)
-        if stmt is not None:
-            return stmt.knowbases
-        return None
-
-
+    def get_knowbases_by_user(self, profile: User) -> list[KnowBase] | None:
+        return profile.knowbases
 
