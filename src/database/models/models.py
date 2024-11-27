@@ -67,6 +67,7 @@ class File(Base):
     type: Mapped[str]
     URL: Mapped[str] = mapped_column(nullable=False)
     keywords: Mapped[list[str]] = mapped_column(ARRAY(String))
+    policy: Mapped[bool] = mapped_column(nullable=False, default=False) # секретность файла: True = выдается пользователям с policy = True
 
     records: Mapped[list[Record]] = relationship(
         secondary=record_files_table, back_populates="files"
@@ -128,7 +129,10 @@ class Customization(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     knowbase_id: Mapped[int] = mapped_column(ForeignKey("knowbase.id"), nullable=False)
     font: Mapped[str]
-    logo_URL: Mapped[str]
+    logo_URL: Mapped[str | None] = mapped_column(nullable=True)
+    background_color: Mapped[str] = mapped_column(nullable=False, default="#FFFFFF")
+    window_width: Mapped[int] = mapped_column(nullable=False, default=250)
+    window_height: Mapped[int] = mapped_column(nullable=False, default=400)
 
     knowbase: Mapped["KnowBase"] = relationship(back_populates="customization")
 
