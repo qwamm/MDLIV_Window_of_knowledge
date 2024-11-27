@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import (AsyncConnection, AsyncSession,
                                     async_sessionmaker, create_async_engine)
 from sqlalchemy.orm import DeclarativeBase
 
-from .. import (DB_HOST, DB_NAME, DB_PORT, DB_TYPE, DB_USER, DB_PASSWORD)
+from src.enviroments import (DB_HOST, DB_NAME, DB_PORT, DB_TYPE, DB_USER, DB_PASSWORD)
 
 class Base(DeclarativeBase):
     pass

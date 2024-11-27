@@ -1,14 +1,16 @@
 import glob, os
 from ETL import ETL
-from Searcher import Searcher
-from LLM import LLM
+from qdrant_client import QdrantClient
+from Assistant import Assistant
 
 sources = []
 for t in ("*.pdf", "*.docx", "*.txt"):
     sources.extend(glob.glob(os.path.join(os.path.dirname(__file__), t)))
 
-etl = ETL(sources)
-searcher = Searcher(etl.etl("record1"))
-llm = LLM()
-user_request = "What programming languages are used in our company?"
-print(llm.answer(user_request, searcher.search(user_request)["match"]))
+client = QdrantClient(":memory:")
+etl = ETL(sources, client)
+etl.etl("record1")
+
+assistant = Assistant(etl.loader.client)
+user_request = "What types of health insurance are provided for employees?"
+print(assistant.answer(user_request))
