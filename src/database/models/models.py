@@ -136,7 +136,8 @@ class SearchLog(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     knowbase_id: Mapped[int] = mapped_column(ForeignKey("knowbase.id"))
     query: Mapped[str] = mapped_column(nullable=False)
-    # timestamp: Mapped[datetime] = mapped_column(nullable=False)
+    timestamp: Mapped[datetime] = mapped_column(nullable=False)
+    success : Mapped[bool] = mapped_column(nullable=False)
 
     user: Mapped["User"] = relationship(back_populates="search_logs")
     knowbase: Mapped["KnowBase"] = relationship(back_populates="search_logs")
