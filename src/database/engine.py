@@ -5,8 +5,7 @@ from sqlalchemy.ext.asyncio import (AsyncConnection, AsyncSession,
                                     async_sessionmaker, create_async_engine)
 from sqlalchemy.orm import DeclarativeBase
 
-from ..enviroments import (DB_HOST, DB_NAME, DB_PORT, DB_TYPE, DB_USER, DB_PASSWORD)
-
+from .. import (DB_HOST, DB_NAME, DB_PORT, DB_TYPE, DB_USER, DB_PASSWORD)
 
 class Base(DeclarativeBase):
     pass
@@ -67,3 +66,4 @@ async def get_db_session():
 async def create_db_and_tables():
     async with sessionmanager.connect() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
