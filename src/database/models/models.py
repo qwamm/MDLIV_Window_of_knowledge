@@ -48,9 +48,10 @@ class User(Base):
     password: Mapped[str] = mapped_column(nullable=False)
     first_name: Mapped[str]
     second_name: Mapped[str | None]
+    secret: Mapped[str | None]
 
     knowbases: Mapped[list["KnowBase"]] = relationship(
-        secondary=knowbase_users_table
+        secondary=knowbase_users_table, back_populates="users"
     )
     access_policies: Mapped[list["AccessPolicy"]] = relationship(
         back_populates="user"
@@ -111,7 +112,7 @@ class KnowBase(Base):
     )
     customization: Mapped["Customization"] = relationship(back_populates="knowbase")
     search_logs: Mapped[list["SearchLog"]] = relationship(back_populates="knowbase")
-    integrations: Mapped[list["ExternalIntegration"]] = relationship(back_populates="knowbase")
+    # integrations: Mapped[list["ExternalIntegration"]] = relationship(back_populates="knowbase")
 
 
 class Customization(Base):

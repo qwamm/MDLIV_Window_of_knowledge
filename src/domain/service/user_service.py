@@ -20,12 +20,12 @@ class UserService:
             raise InvalidCredentialsException
         return profile
 
-    async def registration(self, login: str, password: str, repeat_password: str):
+    async def registration(self, login: str, first_name: str, second_name: str, password: str, repeat_password: str):
         if password != repeat_password:
             raise HTTPException(HTTP_400_BAD_REQUEST, "Passwords don't match")
         if await self.profile_repository.get_by_username(login) is not None:
             raise HTTPException(HTTP_400_BAD_REQUEST, "User already exist")
-        await self.profile_repository.registration(login, password)
+        await self.profile_repository.registration(login, password, first_name, second_name)
 
     async def get_knowbases_by_id(self, id: int) -> list[KnowBase]:
         know_bases = await self.profile_repository.get_knowbases_by_id(id)
