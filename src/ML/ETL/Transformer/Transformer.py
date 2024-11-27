@@ -1,6 +1,4 @@
 import re
-from PdfExtractor import PdfExtractor
-import glob, os
 
 
 class Transformer:
