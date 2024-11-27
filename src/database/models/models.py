@@ -2,7 +2,7 @@ from __future__ import annotations
 from sqlalchemy import String, ForeignKey, Table, Column
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
 from sqlalchemy.dialects.postgresql import ARRAY
-import datetime
+from datetime import datetime
 
 
 class Base(DeclarativeBase):
