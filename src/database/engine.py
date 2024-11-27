@@ -7,11 +7,12 @@ from sqlalchemy.orm import DeclarativeBase
 
 from src.enviroments import (DB_HOST, DB_NAME, DB_PORT, DB_TYPE, DB_USER, DB_PASSWORD)
 
+
 class Base(DeclarativeBase):
     pass
 
 
-connect_string = f"{DB_TYPE}+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+connect_string = f"{DB_TYPE}+asyncpg://{DB_USER}:{DB_PASSWORD}:@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 
 class DatabaseSessionManager:

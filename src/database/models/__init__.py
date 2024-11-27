@@ -1,1 +1,1 @@
-from .models import User, File, Tag, Record, KnowBase, UsersBase, Customization, AccessPolicy
+from .models import User, File, Tag, Record, KnowBase,  Customization, AccessPolicy

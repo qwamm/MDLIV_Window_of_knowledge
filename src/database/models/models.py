@@ -3,10 +3,7 @@ from sqlalchemy import String, ForeignKey, Table, Column
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
 from sqlalchemy.dialects.postgresql import ARRAY
 from datetime import datetime
-
-
-class Base(DeclarativeBase):
-    pass
+from .. import Base
 
 
 knowbase_users_table = Table(
@@ -41,7 +38,7 @@ class AccessPolicy(Base):
     ip_addresses: Mapped[list[str]] = mapped_column(ARRAY(String), nullable=False)
     policy: Mapped[bool] = mapped_column(nullable=False, default=False)
 
-    user: Mapped[User] = relationship("User", back_populates="access_policies")
+    user: Mapped["User"] = relationship(back_populates="access_policies")
 
 class User(Base):
     __tablename__ = "user"
@@ -52,12 +49,14 @@ class User(Base):
     first_name: Mapped[str]
     second_name: Mapped[str | None]
 
-    knowbases: Mapped[list[KnowBase]] = relationship(
-        back_populates="users", secondary=knowbase_users_table
+    knowbases: Mapped[list["KnowBase"]] = relationship(
+        secondary=knowbase_users_table
     )
-    access_policies: Mapped[list[AccessPolicy]] = relationship(
-        back_populates="user", cascade="all, delete-orphan"
+    access_policies: Mapped[list["AccessPolicy"]] = relationship(
+        back_populates="user"
     )
+
+    search_logs: Mapped["SearchLog"] = relationship(back_populates="user")
 
 
 class File(Base):
@@ -69,8 +68,8 @@ class File(Base):
     keywords: Mapped[list[str]] = mapped_column(ARRAY(String))
     policy: Mapped[bool] = mapped_column(nullable=False, default=False) # секретность файла: True = выдается пользователям с policy = True
 
-    records: Mapped[list[Record]] = relationship(
-        secondary=record_files_table, back_populates="files"
+    records: Mapped[list["Record"]] = relationship(
+        secondary=record_files_table
     )
 
 
@@ -81,8 +80,8 @@ class Tag(Base):
     tag_name: Mapped[str] = mapped_column(nullable=False)
     description: Mapped[str | None]
 
-    records: Mapped[list[Record]] = relationship(
-        secondary=record_tags_table, back_populates="tags"
+    records: Mapped[list["Record"]] = relationship(
+        secondary=record_tags_table
     )
 
 
@@ -92,11 +91,11 @@ class Record(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     description: Mapped[str | None]
 
-    files: Mapped[list[File]] = relationship(
-        secondary=record_files_table, back_populates="records"
+    files: Mapped[list["File"]] = relationship(
+        secondary=record_files_table
     )
-    tags: Mapped[list[Tag]] = relationship(
-        secondary=record_tags_table, back_populates="records"
+    tags: Mapped[list["Tag"]] = relationship(
+        secondary=record_tags_table
     )
 
 
@@ -107,20 +106,12 @@ class KnowBase(Base):
     name: Mapped[str] = mapped_column(nullable=False)
     description: Mapped[str | None]
 
-    users: Mapped[list[User]] = relationship(
-        back_populates="knowbases", secondary=knowbase_users_table
+    users: Mapped[list["User"]] = relationship(
+        secondary=knowbase_users_table
     )
     customization: Mapped["Customization"] = relationship(back_populates="knowbase")
     search_logs: Mapped[list["SearchLog"]] = relationship(back_populates="knowbase")
     integrations: Mapped[list["ExternalIntegration"]] = relationship(back_populates="knowbase")
-
-
-class UsersBase(Base):
-    __tablename__ = "usersbase"
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    roles: Mapped[list[int]] = mapped_column(ARRAY(Mapped[int]))
 
 
 class Customization(Base):
@@ -144,7 +135,7 @@ class SearchLog(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     knowbase_id: Mapped[int] = mapped_column(ForeignKey("knowbase.id"))
     query: Mapped[str] = mapped_column(nullable=False)
-    timestamp: Mapped[datetime] = mapped_column(nullable=False)
+    # timestamp: Mapped[datetime] = mapped_column(nullable=False)
 
     user: Mapped["User"] = relationship(back_populates="search_logs")
     knowbase: Mapped["KnowBase"] = relationship(back_populates="search_logs")
