@@ -116,7 +116,7 @@ class UsersBase(Base):
     __tablename__ = "usersbase"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(Mapped[int], ForeignKey("user.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     roles: Mapped[list[int]] = mapped_column(ARRAY(Mapped[int]))
 
 
