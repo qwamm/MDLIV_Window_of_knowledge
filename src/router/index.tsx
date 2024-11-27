@@ -1,30 +1,33 @@
-import { lazy, Suspense } from "react";
-import { Switch, Route } from "react-router-dom";
+import {lazy, Suspense, useState} from "react";
+import { Route, BrowserRouter, Routes } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import routes from "./config";
+import Home from "../pages/Home";
+import Authorization from "../pages/Authorization";
 import { Styles } from "../styles/styles";
+import Registration from "../pages/Registration";
+import Chats from "../pages/Chats";
 
-const Router = () => {
+export default function Router() {
+    const [login, setLogin] = useState("")
+    const [submit, setSubmitted] = useState("")
+    const [password, setPassword] = useState("")
+
   return (
-    <Suspense fallback={null}>
-      <Styles />
-      <Header />
-      <Switch>
-        {routes.map((routeItem) => {
-          return (
-            <Route
-              key={routeItem.component}
-              path={routeItem.path}
-              exact={routeItem.exact}
-              component={lazy(() => import(`../pages/${routeItem.component}`))}
-            />
-          );
-        })}
-      </Switch>
-      <Footer />
-    </Suspense>
+      <Routes>
+            <Route path ="/" element = {
+                <Suspense fallback={null}>
+                <Styles />
+                <Header />
+                <Home/>
+                <Footer />
+                </Suspense>
+            }
+            ></Route>
+          <Route path = '/login' element = {<Authorization setLogin = {setLogin} setSubmitted = {setSubmitted} setPassword = {setPassword}/>}></Route>
+          <Route path = '/register' element = {<Registration setLogin = {setLogin} setSubmitted = {setSubmitted} setPassword = {setPassword}/>}></Route>
+          <Route path = "/chats" element = {<Chats/>}> </Route>
+      </Routes>
   );
 };
 
-export default Router;
