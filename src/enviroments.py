@@ -13,7 +13,7 @@ if SECRET_KEY is None:
             SECRET_KEY = secrets.token_urlsafe(16)
             f.write(SECRET_KEY)
 
-DB_NAME = "mdliv_nuclear"
+DB_NAME = "mdliv_t1"
 DB_TYPE = "postgresql"
 DB_USER = 'postgres'
 DB_PASSWORD = 'pgAdminPassword'
