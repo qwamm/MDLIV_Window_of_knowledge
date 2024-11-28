@@ -35,7 +35,7 @@ class S3Client:
             async with self.get_client() as client:
                 await client.put_object(
                     Bucket=self.bucket_name,
-                    Key=file.filename,
+                    Key="buc1/" + file.filename,
                     Body=file.file,
                 )
                 return file.filename + "/" + file.filename
@@ -50,11 +50,14 @@ class S3Client:
         except ClientError as e:
             return None
 
-    async def get_file(self, object_name: str): #что возвращать??
+    async def get_file(self, object_name: str):
         try:
             async with self.get_client() as client:
                 response = await client.get_object(Bucket=self.bucket_name, Key=object_name)
                 data = await response["Body"].read()
-                return data
+                with open(f"file_tmp/{object_name}", "wb") as file:
+                    file.write(data)
+                print(f"File {object_name} downloaded to file_path/{object_name}")
+                return f"file_tmp/{object_name}"
         except ClientError as e:
-            return None
+            print(f"Error downloading file: {e}")

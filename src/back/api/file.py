@@ -1,10 +1,10 @@
 import json
 from http.client import HTTPException
+import os
 
 from fastapi_controllers import Controller, get, post
 from pydantic import BaseModel
 from fastapi import Depends, Response
-from ..login_manager import login_manager
 from src.domain import FileService
 from src.database import User
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,7 +12,7 @@ from src.database import get_db_session
 from datetime import timedelta
 from fastapi import UploadFile
 from src.domain import s3_connection
-from ...domain.s3_connection import S3Client
+from src.domain.s3_connection import S3Client
 from starlette.status import HTTP_400_BAD_REQUEST
 from fastapi import File, UploadFile, Depends, HTTPException
 from fastapi.responses import FileResponse
@@ -39,19 +39,21 @@ class FileController(Controller):
         self.file_service = FileService(session)
 
     @post("/addFiles")
-    async def addFiles(self, response: UploadFile):
+    async def addFiles(self, response: addFilesRequest):
         if response is None:
             raise HTTPException(HTTP_400_BAD_REQUEST, 'incorrect files')
         else:
-            url = await client.upload_file(response)
+            url = []
+            for file in response.files:
+                url += await client.upload_file(file)
             return {"message": "OK", "url" : f"{url}"}
 
     @get("/getFiles")
-    async def get_files(self, url: str):
-        file = await client.get_file(url)
-        return FileResponse(file)
+    async def get_files(self, bucket_name: str, file_name: str):
+        file_path = await client.get_file(file_name)
+        if file_path is not None:
+            return FileResponse(path=file_path)
+        else:
+            raise HTTPException(HTTP_400_BAD_REQUEST, file_path)
 
 
-    # @post("/addNotion")
-    # async def addNotion(self, url: str):
-    #     pass
