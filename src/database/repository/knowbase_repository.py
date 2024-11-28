@@ -23,26 +23,34 @@ class KnowBaseRepository:
     async def get_users_by_KnowBase(self, knowbase: KnowBase) -> list[User] | None:
         return knowbase.users
 
-    async def add_user_to_KnowBase(self, user: User) -> None:
-        KnowBase.users.append(user)
-        await self.session.flush()
+    async def add_user_to_KnowBase(self, id: int, user: User) -> KnowBase | None:
+        know_base = await self.get_by_id(id)
+        if know_base is not None:
+            know_base.users.append(user)
+            await self.session.flush()
+        return know_base
 
     async def create_KnowBase(self, name: str, description: str) -> None:
         know_base = KnowBase(name=name, description=description)
         self.session.add(know_base)
         await self.session.flush()
 
-    async def delete_KnowBase(self, id: int) -> None:
+    async def delete_KnowBase(self, id: int) -> KnowBase | None:
         know_base = await self.get_by_id(id)
         await self.session.delete(know_base)
         await self.session.flush()
+        return know_base
 
-    async def add_record(self, id: int, record: Record) -> None:
+    async def add_record(self, id: int, record: Record) -> KnowBase | None:
         know_base = await self.get_by_id(id)
-        know_base.records.append(record)
-        await self.session.flush()
+        if know_base is not None:
+            know_base.records.append(record)
+            await self.session.flush()
+        return know_base
 
-    async def delete_record(self, id: int, record: Record):
+    async def delete_record(self, id: int, record: Record) -> KnowBase | None:
         know_base = await self.get_by_id(id)
-        know_base.records.remove(record)
-        await self.session.flush()
+        if know_base is not None:
+            know_base.records.remove(record)
+            await self.session.flush()
+        return know_base

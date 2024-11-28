@@ -1,37 +1,54 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database import File, Record
-from src.database import FileRepository
+from src.database import KnowBaseRepository
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST
-
+from src.database import User, KnowBase
 
 
 class KnowBaseService:
     def __init__(self, session: AsyncSession):
         self.session = session
-        self.file_repository = FileRepository(session)
+        self.knowbase_repository = KnowBaseRepository(session)
 
-    async def get_file_url(self, file_id: int) -> str:
-        file = await self.file_repository.get_by_id(file_id)
-        if not file:
-            raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="File not found")
-        return file.URL
+    async def get_by_id(self, id: int) -> KnowBase:
+        knowbase = await self.knowbase_repository.get_by_id(id)
+        if knowbase is None:
+            raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Knowbase not found")
+        return knowbase
 
-    async def set_keywords(self, file_id: int, keywords: list[str]) -> None:
-        file = await self.file_repository.get_by_id(file_id)
-        if not file:
-            raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="File not found")
-        file.keywords = keywords
-        await self.session.commit()
+    async def get_by_name(self, base_name: str) -> KnowBase:
+        knowbase = await self.knowbase_repository.get_by_name(base_name)
+        if knowbase is None:
+            raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Knowbase not found")
+        return knowbase
 
-    async def add_file(self, file_type: str, url: str, keywords: list[str], record: Record) -> File:
-        file = await self.file_repository.add_file(file_type, url, keywords, record)
-        if not file:
-            raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail="Failed to add file")
-        return file
+    async def get_users_by_KnowBase(self, knowbase: KnowBase) -> list[User] | None:
+        return await self.knowbase_repository.get_users_by_KnowBase(knowbase)
 
-    async def delete_file(self, file_id: int) -> None:
-        file = await self.file_repository.get_by_id(file_id)
-        if not file:
-            raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="File not found")
-        await self.file_repository.delete_file_by_id(file_id)
+    async def add_user_to_KnowBase(self, id: int, user: User) -> KnowBase:
+        knowbase = await self.knowbase_repository.add_user_to_KnowBase(id, user)
+        if knowbase is None:
+            raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Knowbase not found")
+        return knowbase
+
+    async def create_KnowBase(self, name: str, description: str) -> None:
+        await self.knowbase_repository.create_KnowBase(name, description)
+
+    async def delete_KnowBase(self, id: int) -> KnowBase:
+        knowbase = await self.knowbase_repository.delete_KnowBase(id)
+        if knowbase is None:
+            raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Knowbase not found")
+        return knowbase
+
+    async def add_record(self, id: int, record: Record) -> KnowBase:
+        knowbase = await self.knowbase_repository.add_record(id, record)
+        if knowbase is None:
+            raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Knowbase not found")
+        return knowbase
+
+    async def delete_record(self, id: int, record: Record) -> KnowBase:
+        knowbase = await self.knowbase_repository.delete_record(id, record)
+        if knowbase is None:
+            raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Knowbase not found")
+        return knowbase
