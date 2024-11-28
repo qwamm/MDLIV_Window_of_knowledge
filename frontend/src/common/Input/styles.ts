@@ -8,5 +8,6 @@ export const Container = styled("div")`
 
 export const StyledInput = styled("input")`
   font-size: 0.875rem;
-    padding: 10px 5px;
+    padding: 10px 25px;
+    border-radius: 999px
 `;

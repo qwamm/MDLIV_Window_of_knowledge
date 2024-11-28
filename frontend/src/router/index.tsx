@@ -10,6 +10,8 @@ import ChatWindow from "../components/ChatWindow";
 import Chats from "../pages/Chats"
 import { ColorPicker, useColor } from "react-color-palette";
 import Customization from "../pages/Customization";
+import AdminPanel from '../pages/AdminPanel'
+import CreateWindow from '../components/CreateWindow'
 
 export default function Router() {
     const [login, setLogin] = useState("")
@@ -39,6 +41,8 @@ export default function Router() {
                   <Customization color = {color} setColor={setColor}/>
               </Suspense>
           }></Route>
+          <Route path = "/panel" element = {<AdminPanel/>}></Route>
+          <Route path = "/create_window" element = {<CreateWindow/>}></Route>
       </Routes>
   );
 };

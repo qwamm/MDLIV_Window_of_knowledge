@@ -52,23 +52,36 @@ export default function  Header (props: any) {
       props.setSubmitted(false)
       navigate('/')
     };
-
     return (
       <>
         <CustomNavLinkSmall onClick={() => navigate('/')}>
           <Span>{"Главная"}</Span>
         </CustomNavLinkSmall>
-        <CustomNavLinkSmall onClick={() => navigate('/customization')}>
+        <CustomNavLinkSmall onClick={() => {
+            if (props.submitted) {
+                navigate('/customization')
+            } else {
+                window.alert('Вы не авторизованы')
+            }
+        }
+        }>
           <Span>{"Кастомизация"}</Span>
         </CustomNavLinkSmall>
-        <CustomNavLinkSmall onClick={() => scrollTo("product")}>
+        <CustomNavLinkSmall onClick={() => {
+            if (props.submitted) {
+                navigate('/panel')
+            }
+            else {
+                window.alert('Вы не авторизованы')
+            }
+        }}>
           <Span>{"Панель администратора"}</Span>
         </CustomNavLinkSmall>
         {
           props.submitted ? <>
             <CustomNavLinkSmall
                 style={{ width: "100px" }}
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/profile')}
             >
               <Span>
                 <Button>{"Профиль"}</Button>

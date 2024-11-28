@@ -5,6 +5,7 @@ import { withTranslation } from "react-i18next";
 import { ContentBlockProps } from "./types";
 import { Button } from "../../common/Button";
 import { SvgIcon } from "../../common/SvgIcon";
+import {useNavigate} from "react-router-dom"
 import {
   ContentSection,
   Content,
@@ -32,6 +33,7 @@ const ContentBlock = ({
       behavior: "smooth",
     });
   };
+  const navigate = useNavigate()
 
   return (
     <ContentSection>
@@ -64,7 +66,7 @@ const ContentBlock = ({
                           <Button
                             key={id}
                             color={item.color}
-                            onClick={() => scrollTo("about")}
+                            onClick={() => navigate('/create_window')}
                           >
                             {t(item.title)}
                           </Button>
