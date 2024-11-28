@@ -15,7 +15,7 @@ class RecordRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    async def get_by_id(self, id: int) -> File | None:
+    async def get_by_id(self, id: int) -> Record | None:
         stmt = select(Record).where(Record.id == id).limit(1)
         return await self.session.scalar(stmt)
 
