@@ -14,6 +14,8 @@ from fastapi import UploadFile
 from src.domain import s3_connection
 from ...domain.s3_connection import S3Client
 from starlette.status import HTTP_400_BAD_REQUEST
+from fastapi import File, UploadFile, Depends, HTTPException
+from fastapi.responses import FileResponse
 
 client = S3Client(
     access_key="YCAJElPfE9y_wvK6_qcrWCqLU",
@@ -41,5 +43,12 @@ class FileController(Controller):
         if response is None:
             raise HTTPException(HTTP_400_BAD_REQUEST, 'incorrect files')
         else:
-            await client.upload_file(response)
-            return {"message": "OK"}
+            url = await client.upload_file(response)
+            return {"message": "OK", "url" : f"{url}"}
+
+    @get("/getFiles")
+    async def get_files(self, url: str):
+        file = client.get_file(url)
+        return FileResponse(file)
+
+

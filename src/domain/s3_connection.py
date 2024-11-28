@@ -50,7 +50,7 @@ class S3Client:
         except ClientError as e:
             return None
 
-    async def get_file(self, object_name: str) -> None: #что возвращать??
+    async def get_file(self, object_name: str) -> UploadFile.file: #что возвращать??
         try:
             async with self.get_client() as client:
                 response = await client.get_object(Bucket=self.bucket_name, Key=object_name)
