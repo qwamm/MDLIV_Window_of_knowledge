@@ -1,0 +1,49 @@
+services:
+  backend:
+    build:
+      context: C:\MDLIV_Window_of_knowledge
+      dockerfile: ./Dockerfile-server
+    expose:
+      - "8000"
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8080
+        published: "8080"
+        protocol: tcp
+    restart: always
+  frontend:
+    build:
+      context: C:\MDLIV_Window_of_knowledge\frontend
+      dockerfile: ./Dockerfile-frontend
+    expose:
+      - "3000"
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 3000
+        published: "3000"
+        protocol: tcp
+    restart: always
+ proxy:
+    build:
+      context: C:\MDLIV_Window_of_knowledge\proxy
+      dockerfile: ./Dockerfile-proxy
+    expose:
+      - "5050"
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 5050
+        published: "5050"
+        protocol: tcp
+    restart: always
+networks:
+  default:
+    name: mdliv_window_of_knowledge_default
