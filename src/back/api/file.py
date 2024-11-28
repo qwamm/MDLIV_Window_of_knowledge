@@ -24,10 +24,10 @@ client = S3Client(
     bucket_name="aaaa-test"
 )
 
-class addFilesRequest(BaseModel):
+class addFileRequest(BaseModel):
     record_name: str
-    files: list[UploadFile]
-    files_descripton: list[str]
+    file: UploadFile
+    files_descripton: str
 
 
 class FileController(Controller):
@@ -38,14 +38,14 @@ class FileController(Controller):
         self.session = session
         self.file_service = FileService(session)
 
-    @post("/addFiles")
-    async def addFiles(self, response: addFilesRequest):
+    @post("/addFile")
+    async def addFiles(self, response: addFileRequest):
         if response is None:
             raise HTTPException(HTTP_400_BAD_REQUEST, 'incorrect files')
         else:
             url = []
-            for file in response.files:
-                url += await client.upload_file(file)
+
+            url += await client.upload_file(response.file)
             return {"message": "OK", "url" : f"{url}"}
 
     @get("/getFiles")
