@@ -9,9 +9,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.database import get_db_session
 from datetime import timedelta
 
+
 class MessageRequest(BaseModel):
     user_request: str
     kb_id: int
+
+
+class LlmResponse(BaseModel):
+    llm_response: str
+    sources: list[str]
+
 
 class ChatController(Controller):
     prefix = "/chat"
@@ -21,5 +28,6 @@ class ChatController(Controller):
         pass
 
     @post("/message")
-    def message(self, request: MessageRequest):
+    def message(self, request: MessageRequest) -> LlmResponse:
         pass
+

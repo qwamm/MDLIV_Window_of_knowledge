@@ -165,14 +165,14 @@ class ExternalIntegration(Base):
     knowbase: Mapped["KnowBase"] = relationship(back_populates="integrations")
 '''
 
-class AdminLog(Base):
-    __tablename__ = "admin_logs"
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
-    knowbase_id: Mapped[int] = mapped_column(ForeignKey("knowbase.id"))
-    action: Mapped[str] = mapped_column(nullable=False)  # Поле для действия администратора
-    timestamp: Mapped[datetime] = mapped_column(nullable=False)  # Временная метка
-
-    user: Mapped["User"] = relationship(back_populates="admin_logs")
-    knowbase: Mapped["KnowBase"] = relationship(back_populates="admin_logs")
+# class AdminLog(Base):
+#     __tablename__ = "admin_logs"
+#
+#     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+#     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+#     knowbase_id: Mapped[int] = mapped_column(ForeignKey("knowbase.id"))
+#     action: Mapped[str] = mapped_column(nullable=False)  # Поле для действия администратора
+#     timestamp: Mapped[datetime] = mapped_column(nullable=False)  # Временная метка
+#
+#     user: Mapped["User"] = relationship(back_populates="admin_logs")
+#     knowbase: Mapped["KnowBase"] = relationship(back_populates="admin_logs")

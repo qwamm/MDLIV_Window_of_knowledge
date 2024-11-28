@@ -22,22 +22,29 @@ class RecordRepository:
     def get_records(self, file: File) -> list[Record] | None:
         return file.records
 
-    async def add_record(self, decription: str, files: list[File], tags: list[Tag]) -> Record | None:
-        record = Record(description=decription)
+    async def add_record(self, decription: str, files: list[File], tags: list[Tag], knowbase_id: int) -> Record | None:
+        record = Record(description=decription, knowbase_id=knowbase_id)
         self.session.add(record)
+        await self.session.commit()
         await self.add_file_to_record(files)
         await self.add_tag_to_record(tags)
         return await self.get_by_id(record.id)
 
     async def add_file_to_record(self, files: list[File]) -> None:
-        Record.files += files
+        #record = await self.get_by_id(id)
+        for file in files:
+            Record.files.append(file)
         await self.session.flush()
 
     async def add_tag_to_record(self, tags: list[Tag]) -> None:
-        Record.tags += tags
+        #record = await self.get_by_id(id)
+        for tag in tags:
+            Record.tags.append(tag)
         await self.session.flush()
 
-    async def delete_file_by_id(self, id: int, files: File) -> None:
-        stmt = delete(Record).where(Record.id == id)
-        await self.session.execute(stmt)
+    async def delete_record_by_id(self, id: int) -> None:
+        record = await self.get_by_id(id)
+        await self.session.delete(record)
         await self.session.commit()
+        return record
+

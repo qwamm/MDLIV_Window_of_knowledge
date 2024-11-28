@@ -42,15 +42,15 @@ class KnowBaseRepository:
         return know_base
 
     async def add_record(self, id: int, record: Record) -> KnowBase | None:
-        know_base = await self.get_by_id(id)
-        if know_base is not None:
-            know_base.records.append(record.id)
-            await self.session.commit()
-        return know_base
+        knowbase = await self.get_by_id(id)
+        if knowbase is not None:
+            knowbase.records.append(record)
+            # await self.session.commit()
+        return knowbase
 
     async def delete_record(self, id: int, record: Record) -> KnowBase | None:
         know_base = await self.get_by_id(id)
         if know_base is not None:
-            know_base.records.remove(record.id)
+            know_base.records.remove(record)
             await self.session.commit()
         return know_base

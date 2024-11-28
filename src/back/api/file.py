@@ -48,7 +48,10 @@ class FileController(Controller):
 
     @get("/getFiles")
     async def get_files(self, url: str):
-        file = client.get_file(url)
+        file = await client.get_file(url)
         return FileResponse(file)
 
 
+    # @post("/addNotion")
+    # async def addNotion(self, url: str):
+    #     pass

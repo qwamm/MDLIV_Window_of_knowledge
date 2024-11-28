@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database import Record, Tag, File
-from src.database import RecordRepository, TagRepository
+from src.database import RecordRepository, TagRepository, FileRepository
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST
 
 
@@ -10,6 +10,7 @@ class RecordService:
         self.session = session
         self.record_repository = RecordRepository(session)
         self.tag_repository = TagRepository(session)
+        self.file_repository = FileRepository(session)
 
     async def get_by_id(self, id: int) -> Record:
         record = await self.record_repository.get_by_id(id)
@@ -30,16 +31,15 @@ class RecordService:
             raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Tag not found")
         await self.tag_repository.delete_file_by_id(tag_id)
 
-    async def create_record(self, description: str, file_ids: list[int], tag_ids: list[int]) -> Record:
-        files = [await self.record_repository.get_by_id(file_id) for file_id in file_ids]
-        tags = [await self.tag_repository.get_by_id(tag_id) for tag_id in tag_ids]
-        if any(file is None for file in files) or any(tag is None for tag in tags):
-            raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="One or more files or tags not found")
-        record = await self.record_repository.add_record(description, files, tags)
+    async def create_record(self, description: str, file_ids: list[int], tag_ids: list[int], knowbase_id: int) -> Record:
+        files = list(filter(None, [await self.file_repository.get_by_id(file_id) for file_id in file_ids]))
+        tags = list(filter(None, [await self.tag_repository.get_by_id(tag_id) for tag_id in tag_ids]))
+
+        record = await self.record_repository.add_record(description, files, tags, knowbase_id)
         return record
 
     async def delete_record(self, record_id: int) -> None:
         record = await self.record_repository.get_by_id(record_id)
-        if not record:
+        if record is None:
             raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Record not found")
-        await self.record_repository.delete_file_by_id(record_id)
+        await self.record_repository.delete_record_by_id(record_id)

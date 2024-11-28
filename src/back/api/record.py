@@ -18,11 +18,6 @@ class AddTagRequest(BaseModel):
     record_ids: list[int]
 
 
-class DeleteRecordRequest(BaseModel):
-    kb_id: int
-    id: int
-
-
 class RecordResponse(BaseModel):
     knowledge_base: int
     files: list[int]
@@ -47,14 +42,14 @@ class RecordController(Controller):
 
     @post("/add_record")
     async def add_record(self, request: AddRecordRequest):
-        record = await self.record_service.create_record(request.description, request.files, request.tags)
-        await self.knowbase_service.add_record(request.knowledge_base, record)
+        record = await self.record_service.create_record(request.description, request.files, request.tags, request.knowledge_base)
+        # await self.knowbase_service.add_record(request.knowledge_base, record)
         return {"message": "OK"}
 
     @post("/delete_record")
-    async def delete_record(self, request: DeleteRecordRequest):
-        record = await self.record_service.get_by_id(request.id)
-        await self.knowbase_service.delete_record(request.kb_id, record)
+    async def delete_record(self, id: int):
+        # record = await self.record_service.get_by_id(id)
+        await self.record_service.delete_record(id)
         return {"message": "OK"}
 
     @post("/add_tag")
