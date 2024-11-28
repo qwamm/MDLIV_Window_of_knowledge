@@ -1,4 +1,5 @@
 import asyncio
+import os
 from contextlib import asynccontextmanager
 
 from aiobotocore.session import get_session
@@ -52,20 +53,33 @@ class S3Client:
         except ClientError as e:
             return None
 
-    async def get_file(self, object_name: str):
+    async def get_file(self, object_name: str, directory: str=''):
         try:
             async with self.get_client() as client:
-                response = await client.get_object(Bucket=self.bucket_name, Key=object_name)
+                response = await client.get_object(Bucket=self.bucket_name, Key=directory + '/' + object_name)
                 data = await response["Body"].read()
-                with open(f"file_tmp/{object_name}", "wb") as file:
+                try:
+                    os.mkdir(directory)
+                except:
+                    pass
+                with open(f"{directory}/{object_name}", "wb") as file:
                     file.write(data)
-                print(f"File {object_name} downloaded to file_path/{object_name}")
-                return f"file_tmp/{object_name}"
+                print(f"File {object_name} downloaded to {directory}/{object_name}")
+                return f"{directory}/{object_name}"
         except ClientError as e:
             print(f"Error downloading file: {e}")
 
-    async def get_files(self, kb: str):
-        pass
+    # async def get_files(self, kb: str):
+    #     try:
+    #         async with self.get_client() as client:
+    #             response = await client.get_object(Bucket=self.bucket_name)
+    #             data = await response["Body"].read()
+    #             with open(f"file_tmp/{kb+'/'}", "wb") as file:
+    #                 file.write(data)
+    #             print(f"File {object_name} downloaded to file_path/{object_name}")
+    #             return f"file_tmp/{object_name}"
+    #     except ClientError as e:
+    #         print(f"Error downloading file: {e}")
 
 
     async def get_files_in_knowbase(self, knowbase_name: str):

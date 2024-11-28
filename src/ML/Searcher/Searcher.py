@@ -14,6 +14,8 @@ class Searcher:
                 collection_name=col.name,
                 query_text=request
             )
+            if len(response)==0:
+                continue
             if response[0].score > score:
                 best = response
                 score = response[0].score

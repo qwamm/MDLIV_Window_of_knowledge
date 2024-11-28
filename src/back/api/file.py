@@ -18,12 +18,13 @@ from src.domain.s3_connection import S3Client
 from starlette.status import HTTP_400_BAD_REQUEST
 from fastapi import File, UploadFile, Depends, HTTPException
 from fastapi.responses import FileResponse
+from src.enviroments import s3_access_key, s3_secret_key, s3_endpoint, s3_bucket
 
 client = S3Client(
-    access_key="YCAJElPfE9y_wvK6_qcrWCqLU",
-    secret_key="YCM2xdSph9Johvz2WzXJkbRsZf4dmqH65CIPuuLo",
-    endpoint_url="https://storage.yandexcloud.net",
-    bucket_name="aaaa-test"
+    access_key=s3_access_key,
+    secret_key=s3_secret_key,
+    endpoint_url=s3_endpoint,
+    bucket_name=s3_bucket
 )
 
 class addFileRequest(BaseModel):
