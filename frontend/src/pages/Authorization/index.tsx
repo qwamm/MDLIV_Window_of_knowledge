@@ -22,10 +22,10 @@ export default function Authorization(pros: any) {
     };
 
     const handleSubmit = () => {
-        fetch('/api/auth/login', {
+        fetch('http://localhost/api/auth/login', {
             method: 'POST',
             body: JSON.stringify({
-                'username' : login,
+                'user_name' : login,
                 'password': password,
                 'remember_me': true
             }),
@@ -42,16 +42,13 @@ export default function Authorization(pros: any) {
                     alert("Неверный логин или пароль")
                 }
                 else {
-                    pros.setUsername(login)
-                    pros.setPoints(3041)
+                    pros.setSubmitted(true)
                     navigate('/')
                 }
-                // Handle data
             })
             .catch((err) => {
                 console.log(err.message);
             });
-        pros.setSubmitted(true);
     };
 
     return (

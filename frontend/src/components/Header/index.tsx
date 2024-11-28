@@ -17,14 +17,14 @@ import {
   Span,
 } from "./styles";
 
-const Header = ({ t }: { t: TFunction }) => {
+export default function  Header (props: any) {
   const [visible, setVisibility] = useState(false);
   const navigate = useNavigate()
   const toggleButton = () => {
     setVisibility(!visible);
   };
 
-  const MenuItem = () => {
+  const MenuItem = (props: any) => {
     const scrollTo = (id: string) => {
       const element = document.getElementById(id) as HTMLDivElement;
       element.scrollIntoView({
@@ -32,33 +32,75 @@ const Header = ({ t }: { t: TFunction }) => {
       });
       setVisibility(false);
     };
+
+    const handleLogout = () => {
+      fetch('http://localhost/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+          'accept': 'application/json'
+        },
+      })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            // Handle data
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
+      props.setSubmitted(false)
+      navigate('/')
+    };
+
     return (
       <>
         <CustomNavLinkSmall onClick={() => navigate('/')}>
-          <Span>{t("Главная")}</Span>
+          <Span>{"Главная"}</Span>
         </CustomNavLinkSmall>
-        <CustomNavLinkSmall onClick={() => navigate('/chats')}>
-          <Span>{t("Чаты")}</Span>
+        <CustomNavLinkSmall onClick={() => navigate('/customization')}>
+          <Span>{"Кастомизация"}</Span>
         </CustomNavLinkSmall>
         <CustomNavLinkSmall onClick={() => scrollTo("product")}>
-          <Span>{t("Панель администратора")}</Span>
+          <Span>{"Панель администратора"}</Span>
         </CustomNavLinkSmall>
-        <CustomNavLinkSmall
-          style={{ width: "100px" }}
-          onClick={() => navigate('/login')}
-        >
-          <Span>
-            <Button>{t("Войти")}</Button>
-          </Span>
-        </CustomNavLinkSmall>
-        <CustomNavLinkSmall
+        {
+          props.submitted ? <>
+            <CustomNavLinkSmall
+                style={{ width: "100px" }}
+                onClick={() => navigate('/login')}
+            >
+              <Span>
+                <Button>{"Профиль"}</Button>
+              </Span>
+            </CustomNavLinkSmall>
+            <CustomNavLinkSmall
             style={{ width: "120px" }}
-            onClick={() => navigate('/register')}
-        >
+            onClick={() => {props.setSubmitted(false); navigate('/')}}
+          >
           <Span>
-            <Button>{t("Регистрация")}</Button>
+            <Button>{"Выйти"}</Button>
           </Span>
-        </CustomNavLinkSmall>
+          </CustomNavLinkSmall>
+            </> : <>
+            <CustomNavLinkSmall
+                style={{ width: "100px" }}
+                onClick={() => navigate('/login')}
+            >
+              <Span>
+                <Button>{"Войти"}</Button>
+              </Span>
+            </CustomNavLinkSmall>
+            <CustomNavLinkSmall
+                style={{ width: "120px" }}
+                onClick={() => navigate('/register')}
+            >
+              <Span>
+                <Button>{"Регистрация"}</Button>
+              </Span>
+            </CustomNavLinkSmall>
+          </>
+        }
       </>
     );
   };
@@ -68,10 +110,10 @@ const Header = ({ t }: { t: TFunction }) => {
       <Container>
         <Row justify="space-between">
           <LogoContainer to="/" aria-label="homepage">
-            <SvgIcon src="original.png" width="101px" height="64px" />
+            <SvgIcon src="2.svg" width="120px" height="84px" />
           </LogoContainer>
           <NotHidden>
-            <MenuItem />
+            <MenuItem submitted = {props.submitted} setSubmitted = {props.setSubmitted} />
           </NotHidden>
           <Burger onClick={toggleButton}>
             <Outline />
@@ -94,5 +136,3 @@ const Header = ({ t }: { t: TFunction }) => {
     </HeaderSection>
   );
 };
-
-export default withTranslation()(Header);
