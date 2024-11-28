@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database import Record, Tag, File
 from src.database import RecordRepository, TagRepository, FileRepository
@@ -24,6 +24,13 @@ class RecordService:
             raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="One or more records not found")
         tag = await self.tag_repository.add_tag(tag_name, description, records)
         return tag
+
+    async def add_file(self, file_url: str, description: str, record_id: int) -> str:
+        record = await self.record_repository.get_by_id(record_id)
+        if record is None:
+            raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="One or more records not found")
+        await self.file_repository.add_file(file_url, description, record=record, keywords=[])
+        return file_url
 
     async def delete_tag(self, tag_id: int) -> None:
         tag = await self.tag_repository.get_by_id(tag_id)

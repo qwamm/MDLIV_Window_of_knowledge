@@ -1,14 +1,17 @@
 import json
 from http.client import HTTPException
 import os
+from select import select
 
 from fastapi_controllers import Controller, get, post
+from importlib_metadata import files
 from pydantic import BaseModel
 from fastapi import Depends, Response
+from sqlalchemy.sql.coercions import expect
 from watchfiles import awatch
 
-from src.domain import FileService, KnowBaseService
-from src.database import User
+from src.domain import FileService, KnowBaseService, RecordService
+from src.database import User, Record, RecordRepository
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database import get_db_session
 from datetime import timedelta
@@ -41,17 +44,24 @@ class FileController(Controller):
         self.session = session
         self.file_service = FileService(session)
         self.knowbase_service = KnowBaseService(session)
+        self.records_service = RecordService(session)
 
     @post("/addFile")
-    async def addFiles(self, response: UploadFile, kb_id: int):
+    async def addFiles(self, response: UploadFile, kb_id: int, record_id: int):
         if response is None:
             raise HTTPException(HTTP_400_BAD_REQUEST, 'incorrect files')
         else:
-            url = []
-
             knowbase = await self.knowbase_service.get_by_id(kb_id)
-            url += await client.upload_file(response, where=knowbase.name)
-            return {"message": "OK", "url" : f"{url}"}
+            url = await client.upload_file(response, where=knowbase.name)
+            try:
+                await self.records_service.get_by_id(record_id)
+                await self.records_service.add_file(file_url=url, description="", record_id=record_id)
+                return {"message": "OK", "url": f"{url}", "isCreateNewRecord": False, "recordId": record_id}
+            except:
+                stmt = await self.records_service.create_record(description="", tag_ids=[],
+                                                         knowbase_id=kb_id, file_ids=[])
+                await self.records_service.add_file(file_url=url, description="", record_id=stmt.id)
+                return {"message": "OK", "url" : f"{url}", "isCreateNewRecord" : True, "recordId": record_id}
 
     @get("/getFiles")
     async def get_files(self, bucket_name: str, file_name: str):
