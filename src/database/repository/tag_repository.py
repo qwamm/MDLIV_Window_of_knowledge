@@ -26,14 +26,19 @@ class TagRepository:
     async def add_tag(self, tag_name: str, description: str, records: list[Record]) -> Tag | None:
         tag = Tag(description=description, tag_name=tag_name)
         self.session.add(tag)
-        await self.add_record_to_tag(records)
+        await self.add_record_to_tag(tag.id, records)
+        await self.session.commit()
         return await self.get_by_id(tag.id)
 
-    async def add_record_to_tag(self, records: list[Record]) -> None:
-        Tag.records += records
+    async def add_record_to_tag(self, id: int, records: list[Record]) -> Tag | None:
+        tag = await self.get_by_id(id)
+        if tag is not None:
+            for record in records:
+                tag.records.append(record)
         await self.session.flush()
+        return tag
 
-    async def delete_file_by_id(self, id: int, files: File) -> None:
+    async def delete_tag_by_id(self, id: int) -> None:
         stmt = delete(Tag).where(Tag.id == id)
         await self.session.execute(stmt)
         await self.session.commit()

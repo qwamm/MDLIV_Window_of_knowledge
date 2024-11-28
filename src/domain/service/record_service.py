@@ -29,7 +29,7 @@ class RecordService:
         tag = await self.tag_repository.get_by_id(tag_id)
         if not tag:
             raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Tag not found")
-        await self.tag_repository.delete_file_by_id(tag_id)
+        await self.tag_repository.delete_tag_by_id(tag_id)
 
     async def create_record(self, description: str, file_ids: list[int], tag_ids: list[int], knowbase_id: int) -> Record:
         files = list(filter(None, [await self.file_repository.get_by_id(file_id) for file_id in file_ids]))
