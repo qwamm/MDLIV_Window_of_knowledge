@@ -16,6 +16,8 @@ import {
     Thread,
     Window,
 } from "stream-chat-react";
+
+import { Button } from "../../common/Button";
 import { EmojiPicker } from "stream-chat-react/emojis";
 import "stream-chat-react/dist/css/v2/index.css";
 
@@ -61,16 +63,20 @@ export default function Chats(props: any) {
     if (!client) return <div>Setting up client & connection...</div>;
 
     return (
-        <Chat client={client} theme="str-chat__theme-custom">
-            <ChannelList filters={filters} sort={sort} options={options} />
-            <Channel  emojiSearchIndex={SearchIndex}>
-                <Window>
-                    <ChannelHeader />
-                    <MessageList />
-                    <MessageInput />
-                </Window>
-                <Thread />
-            </Channel>
-        </Chat>
+        <div>
+            <div style={{display: "flex"}}>
+                <Chat client={client} theme="str-chat__theme-custom">
+                    <ChannelList filters={filters} sort={sort} options={options}/>
+                    <Channel emojiSearchIndex={SearchIndex}>
+                        <Window>
+                            <ChannelHeader/>
+                            <MessageList/>
+                            <MessageInput/>
+                        </Window>
+                        <Thread/>
+                    </Channel>
+                </Chat>
+            </div>
+        </div>
     );
 };

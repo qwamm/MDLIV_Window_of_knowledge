@@ -11,23 +11,21 @@ export default function Registration(pros: any) {
 
     const handleLogin = (e: any) => {
         setLogin(e.target.value);
-        pros.setLogin(e.target.value);
-        pros.setSubmitted(false);
     };
 
     const handlePassword = (e: any) => {
         setPassword(e.target.value);
-        pros.setPassword(e.target.value);
-        pros.setSubmitted(false);
     };
 
-    const handleSubmit = () => {
-        fetch('/api/auth/login', {
+    const handleRegistration = () => {
+        fetch('http://localhost/api/auth/register', {
             method: 'POST',
             body: JSON.stringify({
-                'username' : login,
+                'user_name' : login,
+                'first_name': login,
+                'second_name': login,
                 'password': password,
-                'remember_me': true
+                'password_again': password
             }),
             headers: {
                 'Content-type': 'application/json',
@@ -37,29 +35,20 @@ export default function Registration(pros: any) {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                if (data.message !== "OK")
-                {
-                    alert("Неверный логин или пароль")
-                }
-                else {
-                    pros.setUsername(login)
-                    pros.setPoints(3041)
-                    navigate('/')
-                }
-                // Handle data
             })
             .catch((err) => {
                 console.log(err.message);
             });
-        pros.setSubmitted(true);
+        navigate('/')
     };
+
 
     return (
         <div style={{position:'absolute', top: '30%', left: '45%'}}>
             <h1>Создать новый аккаунт</h1>
             <Input name={""} placeholder={"Введите логин"} onChange={handleLogin}></Input>
             <Input name={""} placeholder={"Введите пароль"} onChange={handlePassword}></Input>
-            <Button onClick = {handleSubmit}>
+            <Button onClick = {handleRegistration}>
                 Регистрация
             </Button>
         </div>
