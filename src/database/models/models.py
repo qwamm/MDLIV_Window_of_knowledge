@@ -96,9 +96,10 @@ class Record(Base):
     __tablename__ = "record"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    knowbase_id: Mapped[int] = mapped_column(ForeignKey("knowbase.id"), nullable=False)
     description: Mapped[str | None]
 
-    know_base: Mapped["KnowBase"] = relationship(back_populates="records")
+    knowbase: Mapped["KnowBase"] = relationship(back_populates="records")
 
     files: Mapped[list["File"]] = relationship(
         secondary=record_files_table

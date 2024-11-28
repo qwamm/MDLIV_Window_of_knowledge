@@ -2,6 +2,8 @@ from fastapi_controllers import Controller, get, post
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.domain import KnowBaseService, RecordService
+from fastapi import Depends
+from src.database import get_db_session
 
 
 class CreateRequest(BaseModel):
@@ -30,7 +32,7 @@ class KnowledgeBaseController(Controller):
     prefix = "/knowledge_base"
     tags=["knowledge_base"]
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession = Depends(get_db_session)):
         self.session = session
         self.knowbase_service = KnowBaseService(session)
         self.record_service = RecordService(session)

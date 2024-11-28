@@ -33,24 +33,24 @@ class KnowBaseRepository:
     async def create_KnowBase(self, name: str, description: str) -> None:
         know_base = KnowBase(name=name, description=description)
         self.session.add(know_base)
-        await self.session.flush()
+        await self.session.commit()
 
     async def delete_KnowBase(self, id: int) -> KnowBase | None:
         know_base = await self.get_by_id(id)
         await self.session.delete(know_base)
-        await self.session.flush()
+        await self.session.commit()
         return know_base
 
     async def add_record(self, id: int, record: Record) -> KnowBase | None:
         know_base = await self.get_by_id(id)
         if know_base is not None:
-            know_base.records.append(record)
-            await self.session.flush()
+            know_base.records.append(record.id)
+            await self.session.commit()
         return know_base
 
     async def delete_record(self, id: int, record: Record) -> KnowBase | None:
         know_base = await self.get_by_id(id)
         if know_base is not None:
-            know_base.records.remove(record)
-            await self.session.flush()
+            know_base.records.remove(record.id)
+            await self.session.commit()
         return know_base
