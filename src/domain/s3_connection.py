@@ -36,7 +36,7 @@ class S3Client:
                 await client.put_object(
                     Bucket=self.bucket_name,
                     Key=file.filename,
-                    Body=file,
+                    Body=file.file,
                 )
                 return file.filename + "/" + file.filename
         except ClientError as e:
