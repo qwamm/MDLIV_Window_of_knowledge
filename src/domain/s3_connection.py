@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from aiobotocore.session import get_session
 from botocore.exceptions import ClientError
+from fastapi import UploadFile
 
 
 class S3Client:
@@ -28,18 +29,16 @@ class S3Client:
 
     async def upload_file(
             self,
-            url: str,
+            file: UploadFile,
     ) -> str | None:
-        object_name = url.split("/")[-1]
         try:
             async with self.get_client() as client:
-                with open(url, "rb") as file:
-                    await client.put_object(
-                        Bucket=self.bucket_name,
-                        Key=object_name,
-                        Body=file,
-                    )
-                    return url
+                await client.put_object(
+                    Bucket=self.bucket_name,
+                    Key=file.filename,
+                    Body=file,
+                )
+                return file.filename + "/" + file.filename
         except ClientError as e:
             return None
 
