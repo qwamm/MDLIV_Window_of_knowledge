@@ -17,7 +17,11 @@ Dyumium – ваш проводник к быстрой адаптации и б
 + GPU(вероятно);
 + открытые порты 8080, 3000, 5050.
 
-docker compose up -d
+```docker compose up -d``` - развёртывание в контейнере
+
+
+
+
 
 # Наша система
 ![image](https://github.com/user-attachments/assets/e5e5b92b-93df-4ff7-987b-0980f06e0901)
