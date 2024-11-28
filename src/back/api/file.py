@@ -5,6 +5,8 @@ import os
 from fastapi_controllers import Controller, get, post
 from pydantic import BaseModel
 from fastapi import Depends, Response
+from watchfiles import awatch
+
 from src.domain import FileService, KnowBaseService
 from src.database import User
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -57,5 +59,10 @@ class FileController(Controller):
             return FileResponse(path=file_path)
         else:
             raise HTTPException(HTTP_400_BAD_REQUEST, file_path)
+
+    @get("/getFilesKnowbase")
+    async def get_files_from_knowbase(self, knowbase_name : str):
+        return await client.get_files_in_knowbase(knowbase_name)
+
 
 

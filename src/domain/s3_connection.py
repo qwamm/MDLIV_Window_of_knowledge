@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from aiobotocore.session import get_session
 from botocore.exceptions import ClientError
 from fastapi import UploadFile
+import boto3
 
 
 class S3Client:
@@ -65,3 +66,38 @@ class S3Client:
 
     async def get_files(self, kb: str):
         pass
+
+
+    async def get_files_in_knowbase(self, knowbase_name: str):
+        try:
+            async with self.get_client() as client:
+                s3_client = client
+
+                # Initialize the resulting s3_object_key_list to an empty list
+                s3_object_key_list = []
+
+                # Arguments to be used for list_object_v2
+                operation_parameters = {
+                    'Bucket': self.bucket_name,
+                    'Prefix': f"{knowbase_name}/"
+                }
+
+                done = False
+                while not done:
+                    s3_response = await s3_client.list_objects_v2(**operation_parameters)
+                    for s3_object in s3_response['Contents']:
+                        s3_object_key = s3_object['Key']
+                        s3_object_key_list.append(s3_object_key)
+                    nextContinuationToken = s3_response.get('NextContinuationToken')
+
+                    if nextContinuationToken is None:
+                        done = True
+                    else:
+                        operation_parameters['ContinuationToken'] = nextContinuationToken
+
+                files = []
+                for s3_object_key in s3_object_key_list:
+                    files.append(s3_object_key.split("/")[-1])
+                return files
+        except ClientError as e:
+            print(f"Error: {e}")
