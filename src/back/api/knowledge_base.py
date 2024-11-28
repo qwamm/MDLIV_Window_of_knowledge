@@ -11,18 +11,6 @@ class CreateRequest(BaseModel):
     description: str
 
 
-class AddRecordRequest(BaseModel):
-    knowledge_base: int
-    files: list[int]
-    description: str
-    tags: list[int]
-
-
-class DeleteRecordRequest(BaseModel):
-    kb_id: int
-    id: int
-
-
 class KnowBaseInfoResponse(BaseModel):
     name: str
     description: str
@@ -45,18 +33,6 @@ class KnowledgeBaseController(Controller):
     @post("/create")
     async def create(self, request: CreateRequest):
         knowbase = await self.knowbase_service.create_KnowBase(request.name, request.description)
-        return {"message": "OK"}
-
-    @post("/add_record")
-    async def add_record(self, request: AddRecordRequest):
-        record = await self.record_service.create_record(request.description, request.files, request.tags)
-        await self.knowbase_service.add_record(request.knowledge_base, record)
-        return {"message": "OK"}
-
-    @post("/delete_record")
-    async def delete_record(self, request: DeleteRecordRequest):
-        record = await self.record_service.get_by_id(request.id)
-        await self.knowbase_service.delete_record(request.kb_id, record)
         return {"message": "OK"}
 
     @post("/delete")

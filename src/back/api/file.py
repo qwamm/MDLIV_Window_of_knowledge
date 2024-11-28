@@ -39,7 +39,7 @@ class FileController(Controller):
     @post("/addFiles")
     async def addFiles(self, response: addFilesRequest):
         if response.files is None:
-            raise HTTPException(HTTP_400_BAD_REQUEST, 'uncorrect files')
+            raise HTTPException(HTTP_400_BAD_REQUEST, 'incorrect files')
         else:
             for file in response.files:
                 await client.upload_file(file)
