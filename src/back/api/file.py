@@ -5,7 +5,7 @@ import os
 from fastapi_controllers import Controller, get, post
 from pydantic import BaseModel
 from fastapi import Depends, Response
-from src.domain import FileService
+from src.domain import FileService, KnowBaseService
 from src.database import User
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database import get_db_session
@@ -37,15 +37,17 @@ class FileController(Controller):
     def __init__(self, session: AsyncSession = Depends(get_db_session)):
         self.session = session
         self.file_service = FileService(session)
+        self.knowbase_service = KnowBaseService(session)
 
     @post("/addFile")
-    async def addFiles(self, response: addFileRequest):
+    async def addFiles(self, response: UploadFile, kb_id: int):
         if response is None:
             raise HTTPException(HTTP_400_BAD_REQUEST, 'incorrect files')
         else:
             url = []
 
-            url += await client.upload_file(response.file)
+            knowbase = await self.knowbase_service.get_by_id(kb_id)
+            url += await client.upload_file(response, where=knowbase.name)
             return {"message": "OK", "url" : f"{url}"}
 
     @get("/getFiles")

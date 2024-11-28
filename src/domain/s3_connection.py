@@ -30,12 +30,13 @@ class S3Client:
     async def upload_file(
             self,
             file: UploadFile,
+            where: str=''
     ) -> str | None:
         try:
             async with self.get_client() as client:
                 await client.put_object(
                     Bucket=self.bucket_name,
-                    Key="buc1/" + file.filename,
+                    Key='buc1/' if where=='' else (where+'/') + file.filename,
                     Body=file.file,
                 )
                 return file.filename + "/" + file.filename
@@ -61,3 +62,6 @@ class S3Client:
                 return f"file_tmp/{object_name}"
         except ClientError as e:
             print(f"Error downloading file: {e}")
+
+    async def get_files(self, kb: str):
+        pass

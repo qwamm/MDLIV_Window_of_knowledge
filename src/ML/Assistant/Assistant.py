@@ -1,6 +1,6 @@
 from qdrant_client import QdrantClient
-from LLM import LLM
-from Searcher import Searcher
+from src.ML.LLM import LLM
+from src.ML.Searcher import Searcher
 
 
 # combiner class
